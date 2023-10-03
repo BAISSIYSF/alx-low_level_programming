@@ -1,78 +1,77 @@
 #include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include "main.h"
 
 /**
- * count_words - Counts the number of words in a string
- * @str: The string to count words from
+ * count_word - helper function to count the number of words in a string
+ * @s: string to evaluate
  *
- * Return: The number of words in the string
+ * Return: number of words
  */
-static size_t count_words(const char *str)
+int count_word(char *s)
 {
-size_t count = 0;
-int in_word = 0;
+	int flag, c, w;
 
-while (*str != '\0')
-{
-if (isspace(*str))
-{
-in_word = 0;
-}
-else if (!in_word)
-{
-in_word = 1;
-++count;
-}
+	flag = 0;
+	w = 0;
 
-++str;
-}
+	for (c = 0; s[c] != '\0'; c++)
+	{
+		if (s[c] == ' ')
+			flag = 0;
+		else if (flag == 0)
+		{
+			flag = 1;
+			w++;
+		}
+	}
 
-return count;
+	return (w);
 }
-
 /**
- * strtow - Splits a string into words
- * @str: The string to split
+ * **strtow - splits a string into words
+ * @str: string to split
  *
- * Return: An array of strings, or NULL if str == NULL or str == "" or if memory allocation fails
+ * Return: pointer to an array of strings (Success)
+ * or NULL (Error)
  */
 char **strtow(char *str)
 {
-char **words;
-size_t nwords, i, len;
-const char *p;
+	char **matrix, *tmp;
+	int i, k = 0, len = 0, words, c = 0, start, end;
 
-if (str == NULL || *str == '\0')
-return NULL;
+	while (*(str + len))
+		len++;
+	words = count_word(str);
+	if (words == 0)
+		return (NULL);
 
-nwords = count_words(str);
-words = malloc(sizeof(char *) * (nwords + 1));
-if (words == NULL)
-return NULL;
+	matrix = (char **) malloc(sizeof(char *) * (words + 1));
+	if (matrix == NULL)
+		return (NULL);
 
-for (i = 0, p = str; i < nwords; ++i)
-{
-while (isspace(*p))
-++p;
+	for (i = 0; i <= len; i++)
+	{
+		if (str[i] == ' ' || str[i] == '\0')
+		{
+			if (c)
+			{
+				end = i;
+				tmp = (char *) malloc(sizeof(char) * (c + 1));
+				if (tmp == NULL)
+					return (NULL);
+				while (start < end)
+					*tmp++ = str[start++];
+				*tmp = '\0';
+				matrix[k] = tmp - c;
+				k++;
+				c = 0;
+			}
+		}
+		else if (c++ == 0)
+			start = i;
+	}
 
-len = strcspn(p, " \t");
-words[i] = malloc(sizeof(char) * (len + 1));
-if (words[i] == NULL)
-{
-/* Free memory allocated so far */
-while (i-- > 0)
-free(words[i]);
+	matrix[k] = NULL;
 
-free(words);
-return NULL;
-}
-
-strncpy(words[i], p, len);
-words[i][len] = '\0';
-p += len;
-}
-
-words[nwords] = NULL;
-return words;
+	return (matrix);
 }

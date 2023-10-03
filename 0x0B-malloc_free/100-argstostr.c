@@ -1,46 +1,40 @@
-
 #include "main.h"
-#include <stdio.h>
 #include <stdlib.h>
-
 /**
- * argstostr - concatenates all the arguments of the program
- * @ac: number of arguments
- * @av: array of arguments
- *
- * Return: pointer to a new string containing all the arguments
- * concatenated with a newline character, or NULL on failure
+ * argstostr - main entry
+ * @ac: int input
+ * @av: double pointer array
+ * Return: 0
  */
 char *argstostr(int ac, char **av)
 {
-int i, j, k = 0, len = 0;
-char *str;
+	int i, n, r = 0, l = 0;
+	char *str;
 
-if (ac == 0 || av == NULL)
-return (NULL);
+	if (ac == 0 || av == NULL)
+		return (NULL);
 
-/* Determine length of concatenated string */
-for (i = 0; i < ac; i++)
-{
-for (j = 0; av[i][j] != '\0'; j++)
-len++;
-len++; /* For the newline character */
-}
+	for (i = 0; i < ac; i++)
+	{
+		for (n = 0; av[i][n]; n++)
+			l++;
+	}
+	l += ac;
 
-/* Allocate memory for the string */
-str = malloc((len + 1) * sizeof(char));
-if (str == NULL)
-return (NULL);
-
-/* Copy arguments to string */
-for (i = 0; i < ac; i++)
-{
-for (j = 0; av[i][j] != '\0'; j++)
-str[k++] = av[i][j];
-str[k++] = '\n';
-}
-
-str[k] = '\0'; /* Add null terminator */
-
-return (str);
+	str = malloc(sizeof(char) * l + 1);
+	if (str == NULL)
+		return (NULL);
+	for (i = 0; i < ac; i++)
+	{
+	for (n = 0; av[i][n]; n++)
+	{
+		str[r] = av[i][n];
+		r++;
+	}
+	if (str[r] == '\0')
+	{
+		str[r++] = '\n';
+	}
+	}
+	return (str);
 }
