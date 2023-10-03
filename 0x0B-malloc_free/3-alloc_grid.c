@@ -1,52 +1,38 @@
 #include <stdlib.h>
-#include "main.h"
 
 /**
- * **alloc_grid - creates a two dimensional array of ints
- * @width: width of the matrix
- * @height: height of the matrix
- * Return: pointer to the created matrix (Success)
- * or NULL (Error)
+ * alloc_grid - creates a 2D array of integers
+ * @width: the width of the array
+ * @height: the height of the array
+ *
+ * Return: a pointer to the allocated 2D array, or NULL on failure
  */
-
 int **alloc_grid(int width, int height)
 {
-	int **a, i = 0, j;
+if (width <= 0 || height <= 0)
+{
+return (NULL);
+}
 
-	if (height <= 0 || width <= 0)
-		return (NULL);
+int **grid = malloc(height * sizeof(int *));
+if (grid == NULL)
+{
+return (NULL);
+}
 
-	a = (int **) malloc(sizeof(int *) * height);
+for (int i = 0; i < height; i++)
+{
+grid[i] = calloc(width, sizeof(int));
+if (grid[i] == NULL)
+{
+for (int j = 0; j < i; j++)
+{
+free(grid[j]);
+}
+free(grid);
+return (NULL);
+}
+}
 
-	if (a == NULL)
-		return (NULL);
-
-	while (i < height)
-	{
-		a[i] = (int *) malloc(sizeof(int) * width);
-		if (a[i] == NULL)
-		{
-			free(a);
-			j = 0;
-			while (j <= i)
-			{
-				free(a[j]);
-				j++;
-			}
-			return (NULL);
-		}
-		i++;
-	}
-	i = 0;
-	while (i < height)
-	{
-		j = 0;
-		while (j < width)
-		{
-			a[i][j] = 0;
-			j++;
-		}
-		i++;
-	}
-	return (a);
+return (grid);
 }
